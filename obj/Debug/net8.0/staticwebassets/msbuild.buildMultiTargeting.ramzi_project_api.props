@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\ramzi_project_api.props" />
+</Project>
