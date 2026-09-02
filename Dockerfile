@@ -1,7 +1,7 @@
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["ShopNowAPI.csproj", "./"]
+COPY ["ramz/APItoshoping/ShopNowAPI/ShopNowAPI/ShopNowAPI.csproj", "./"]
 RUN dotnet restore
 COPY . .
 RUN dotnet publish -c Release -o /app/publish
