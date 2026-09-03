@@ -1,52 +1,55 @@
-﻿/*
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using ramzi_project_api.Models;
+using ShopNow2.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// تحديد المنافذ قبل Build()
-builder.WebHost.UseUrls("http://0.0.0.0:5000", "http://0.0.0.0:44347");
-
 // الاتصال بقاعدة البيانات
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Dbconnection")));
-
-// الهوية (Identity)
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<AppDbContext>();
-
-// تفعيل CORS
-builder.Services.AddCors(opt =>
-    opt.AddPolicy("AllowAll", p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod())
+builder.Services.AddDbContext<ShopNowDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    )
 );
 
-// خدمات الـ API
-builder.Services.AddControllers().AddNewtonsoftJson();
+// Controllers + Views
+builder.Services.AddControllersWithViews();
+
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// بناء التطبيق
 var app = builder.Build();
 
-// تهيئة Swagger
-if (app.Environment.IsDevelopment())
+// معالجة الأخطاء في Production
+if (!app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
 }
 
-app.UseHttpsRedirection();//رجعه 
+// لا تستخدم HTTPS Redirection على Render
+// app.UseHttpsRedirection();
 
- app.UseAuthentication();
- app.UseAuthorization();
+// الملفات الثابتة
+app.UseStaticFiles();
 
-app.UseCors("AllowAll");
+app.UseRouting();
 
-app.MapControllers();
+// Swagger
+app.UseSwagger();
+app.UseSwaggerUI();
 
+app.UseAuthorization();
+
+// المسار الافتراضي
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
+
+// تشغيل التطبيق
 app.Run();
-*/
+
+/*
 using System.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -120,4 +123,5 @@ if (app.Environment.IsDevelopment())
 
 // تشغيل التطبيق
 app.Run();
-
+*/
+*/
