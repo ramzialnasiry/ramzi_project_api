@@ -88,7 +88,7 @@ if (app.Environment.IsDevelopment())
 }
 
 // HTTPS Redirect (يُستخدم فقط إذا كنت مشغّل HTTPS محليًا)
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 // المصادقة والتفويض
 app.UseAuthentication();
