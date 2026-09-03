@@ -1,52 +1,48 @@
-using Microsoft.AspNetCore.Identity;
+
+
+
 using Microsoft.EntityFrameworkCore;
-using ramzi_project_api.Models;
+using ShopNow2.Models;  // عدل المسار حسب مكان DbContext عندك
 
 var builder = WebApplication.CreateBuilder(args);
 
-// قاعدة البيانات
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("Dbconnection")
-    )
-);
+// إضافة خدمة الـ DbContext وربطه بسلسلة الاتصال "DefaultConnection"
+builder.Services.AddDbContext<ShopNowDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Identity
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<AppDbContext>();
-
-// CORS
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
-
-// Controllers
-builder.Services.AddControllers();
-
-// Swagger
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// إضافة MVC (Controllers with Views)
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Swagger يعمل في Production أيضًا
-app.UseSwagger();
-app.UseSwaggerUI();
+// تكوين Middleware
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
 
-// لا نستخدم HTTPS Redirect على Render
-// app.UseHttpsRedirection();
+app.UseHttpsRedirection();
+app.UseStaticFiles();
 
-app.UseAuthentication();
+app.UseRouting();
+
 app.UseAuthorization();
+app.UseStaticFiles(); // لتشغيل wwwroot
 
-app.UseCors("AllowAll");
 
-app.MapControllers();
+// إعداد المسار الافتراضي
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+
+
+
+
+
+
+
+
